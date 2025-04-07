@@ -74,8 +74,12 @@ WSGI_APPLICATION = 'tube_scrap_manager.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'zlom',
+        'USER': 'postgres',
+        'PASSWORD': 'admin1234',
+        'HOST': 'localhost',  # lub IP Google Cloud
+        'PORT': '5432',
     }
 }
 
