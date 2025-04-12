@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'rest_framework',
+    'corsheaders',
     #myapps
     'containers',
 ]
@@ -49,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'tube_scrap_manager.urls'
@@ -77,11 +82,14 @@ WSGI_APPLICATION = 'tube_scrap_manager.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'zlom',
+        'NAME': 'zlom2',
         'USER': 'postgres',
         'PASSWORD': 'admin1234',
         'HOST': 'localhost',  # lub IP Google Cloud
         'PORT': '5432',
+        'OPTIONS' : {
+            'options': '-c search_path=public'
+        },
     }
 }
 
@@ -126,3 +134,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # lub inny adres Twojego frontu
+]

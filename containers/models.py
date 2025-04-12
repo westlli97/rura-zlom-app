@@ -14,14 +14,13 @@ class Container(models.Model):
         ('ROUND', 'Okrągły'),
         ('SQUARE', 'Kwadratowy'),
         ('RECT', 'Prostokątny'),
-        ('Marcepan',)
+        ('D_Shape','Marcepan')
     ]
 
     material = models.CharField(max_length=10, choices=MATERIAL_CHOICES)
     shape = models.CharField(max_length=10, choices=SHAPE_CHOICES)
     weight_kg = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     kg_per_metr = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.get_material_display()} - {self.get_shape_display()}"
