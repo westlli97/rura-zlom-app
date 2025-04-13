@@ -28,7 +28,7 @@ from .frontend_views import FrontendAppView
 ]"""
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('your_app.urls')),  # ścieżki do API Django REST Framework
+    path('api/', include('containers.urls')),  # ścieżki do API Django REST Framework
     # Wszystkie pozostałe adresy przekierowujemy do frontendu React
     re_path(r'^.*$', FrontendAppView.as_view(), name='frontend'),
 ]
