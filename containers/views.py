@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from .models import Container
 from rest_framework import status
 from .serializers import ContainerSerializer
+# frontend_views.py
+from django.views.generic import View
+from django.shortcuts import render
 
 class ContainerList(APIView):
     # GET: Pobieranie dostępnych pojemników
@@ -56,3 +59,10 @@ class ContainerDetail(APIView):
 
         container.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+#Front-End
+class FrontendAppView(View):
+    def get(self, request):
+        return render(request, 'index.html')  # plik index.html z folderu build
