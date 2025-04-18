@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { addContainer } from '../api/containersApi'; // Zaimportuj funkcję do wysyłania danych
+import { addContainer } from '../api/containersApi';
 
-const AddWeightForm = ({ onSubmit }) => {
+const AddWeightForm = ({ selectedType, selectedMaterial, onSubmit }) => {
   const [weight, setWeight] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -9,13 +9,22 @@ const AddWeightForm = ({ onSubmit }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    console.log('Kliknięto Dodaj wagę');
 
     try {
-      const containerData = { weight: parseFloat(weight) }; // Przygotuj dane
-      await addContainer(containerData); // Wyślij dane do backendu
-      onSubmit(weight); // Jeśli chcesz wykonać jakieś akcje po wysłaniu
+      const containerData = {
+        weight_kg: parseFloat(weight),
+        material: selectedMaterial,
+        shape: selectedType,
+      };
+
+      console.log('📦 Wysyłane dane:', containerData);
+
+      //await addContainer(containerData);
+      onSubmit(weight);
       setWeight('');
     } catch (err) {
+      console.error('Błąd podczas dodawania wagi:', err);
       setError('Błąd podczas dodawania wagi');
     } finally {
       setLoading(false);
@@ -32,10 +41,13 @@ const AddWeightForm = ({ onSubmit }) => {
         onChange={(e) => setWeight(e.target.value)}
         required
       />
+
       <button type="submit" disabled={loading}>
         {loading ? 'Dodawanie...' : 'Dodaj wagę'}
       </button>
-      {error && <p>{error}</p>}
+
+      {loading && <p>⏳ Trwa dodawanie...</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </form>
   );
 };

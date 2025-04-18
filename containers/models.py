@@ -23,4 +23,6 @@ class Container(models.Model):
     kg_per_metr = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
     def __str__(self):
-        return f"{self.get_material_display()} - {self.get_shape_display()}"
+        return f"{self.get_material_display()} - {self.get_shape_display()} - {self.weight} kg"
+
+

@@ -7,6 +7,20 @@ from .models import Container
 from rest_framework import status
 from .serializers import ContainerSerializer
 
+from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
+
+
+
+
+@csrf_exempt
+@api_view(['POST'])
+def add_container(request):
+    serializer = ContainerSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
 
 class ContainerList(APIView):
     # GET: Pobieranie dostępnych pojemników

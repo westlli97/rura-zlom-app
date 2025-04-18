@@ -15,12 +15,20 @@ export const getContainers = async () => {
 // Dodawanie nowego pojemnika
 export const addContainer = async (newContainer) => {
   try {
+    console.log("Wysyłane dane:", newContainer); //debug dane
     const response = await axiosInstance.post('containers/', newContainer);
     return response.data;
   } catch (error) {
     console.error('Błąd przy dodawaniu pojemnika:', error);
     throw error;
   }
+};
+
+//Dodawanie wagi
+
+export const addWeightEntry = async (entry) => {
+  const response = await axiosInstance.post('containers/', entry); //zmiana bez /add
+  return response.data;
 };
 
 // Aktualizacja wagi pojemnika

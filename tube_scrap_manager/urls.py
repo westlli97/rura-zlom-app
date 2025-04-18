@@ -21,6 +21,7 @@ from django.urls import path, include, re_path
 from containers import views as api_views  # Twoje API – zmień, jeśli masz oddzielny plik urls dla API
 from .frontend_views import FrontendAppView
 
+
 """urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/containerlist/', ContainerList.as_view(), name='Container-list'),
