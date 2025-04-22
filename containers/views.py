@@ -13,12 +13,19 @@ from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.views import View
+from .models import ShapeSize
+
+def get_sizes_by_shape(request):
+    shape = request.GET.get('shape')
+    if not shape:
+        return JsonResponse({'error': 'No shape provided'}, status=400)
+
+    sizes = ShapeSize.objects.filter(shape=shape).values('id', 'size_label')
+    return JsonResponse(list(sizes), safe=False)
 
 
 def csrf_token_view(request):
     return JsonResponse({'csrfToken': get_token(request)})
-
-
 
 
 
