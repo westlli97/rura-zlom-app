@@ -10,6 +10,15 @@ from .serializers import ContainerSerializer
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
 
+from django.middleware.csrf import get_token
+from django.http import JsonResponse
+from django.views import View
+
+
+def csrf_token_view(request):
+    return JsonResponse({'csrfToken': get_token(request)})
+
+
 
 
 

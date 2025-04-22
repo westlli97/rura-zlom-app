@@ -3,6 +3,7 @@ from .views import ContainerList, ContainerDetail
 from containers import views
 
 
+
 urlpatterns = [
     path('containers/', views.add_container),  # POST
     path('containers/', ContainerList.as_view()),

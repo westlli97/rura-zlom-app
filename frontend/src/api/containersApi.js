@@ -31,6 +31,14 @@ export const addWeightEntry = async (entry) => {
   return response.data;
 };
 
+//Dodawanie wagi
+
+export const addWeightEntry2 = async (entry) => {
+  const response = await axiosInstance.post('containers/', entry); //zmiana bez /add
+  return response.data;
+};
+
+
 // Aktualizacja wagi pojemnika
 export const updateContainerWeight = async (id, weight) => {
   try {

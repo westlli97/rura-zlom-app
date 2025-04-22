@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { addContainer } from '../api/containersApi';
 
-const AddWeightForm = ({ selectedType, selectedMaterial, onSubmit }) => {
+const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit }) => {
   const [weight, setWeight] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -16,6 +16,7 @@ const AddWeightForm = ({ selectedType, selectedMaterial, onSubmit }) => {
         weight_kg: parseFloat(weight),
         material: selectedMaterial,
         shape: selectedType,
+        size: selectedSize,
       };
 
       console.log('📦 Wysyłane dane:', containerData);

@@ -5,6 +5,7 @@ const axiosInstance = axios.create({
   timeout: 5000,
   headers: {
     'Content-Type': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
   },
   withCredentials: true, // jeśli korzystasz z sesji lub cookies
 });

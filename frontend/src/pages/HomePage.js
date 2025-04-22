@@ -1,20 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import RuraSelection from '../components/RuraSelection';
 import AddWeightForm from '../components/AddWeightForm';
 import RecentEntries from '../components/RecentEntries';
 import { addWeightEntry } from '../api/containersApi';
+import axios from '../api/axiosInstance';
+
 
 const HomePage = () => {
     console.log('✅ Komponent HomePage został załadowany');
+    useEffect(() => {
+      axios.get('csrf/').then(() => {
+        console.log('✅ CSRF token pobrany i ustawiony w ciasteczkach');
+      }).catch((err) => {
+        console.error('❌ Błąd podczas pobierania CSRF tokena:', err);
+      });
+    }, []);
   const [selectedType, setSelectedType] = useState('');
   const [selectedMaterial, setSelectedMaterial] = useState('');
   const [entries, setEntries] = useState([]);
+  const [selectedSize, setSelectedSize] = useState("");
 
   const handleAddWeight = async (weight) => {
     console.log("Dodano wagę:", weight);
     const newEntry = {
       shape: selectedType,
       material: selectedMaterial,
+      size: selectedSize,
       weight_kg: weight,
     };
     try {
@@ -34,6 +45,8 @@ const HomePage = () => {
         setSelectedType={setSelectedType}
         selectedMaterial={selectedMaterial}
         setSelectedMaterial={setSelectedMaterial}
+        selectedSize={selectedSize} 
+        setSelectedSize={setSelectedSize}
       />
       <AddWeightForm
         selectedType={selectedType}
