@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { addContainer } from '../api/containersApi';
 
 const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit }) => {
   const [weight, setWeight] = useState('');
@@ -21,8 +20,7 @@ const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit 
 
       console.log('📦 Wysyłane dane:', containerData);
 
-      //await addContainer(containerData);
-      onSubmit(weight);
+      await onSubmit(containerData);  // Wywołujemy onSubmit, który będzie przekazywał dane do głównego komponentu
       setWeight('');
     } catch (err) {
       console.error('Błąd podczas dodawania wagi:', err);
@@ -42,11 +40,9 @@ const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit 
         onChange={(e) => setWeight(e.target.value)}
         required
       />
-
       <button type="submit" disabled={loading}>
         {loading ? 'Dodawanie...' : 'Dodaj wagę'}
       </button>
-
       {loading && <p>⏳ Trwa dodawanie...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </form>
