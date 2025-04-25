@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import ContainerList, ContainerDetail
 from containers import views
-from .views import get_sizes_by_shape
+from .views import get_sizes_by_shape, get_material_choices
 
 
 
@@ -10,4 +10,5 @@ urlpatterns = [
     path('containers/', ContainerList.as_view()),
     path('containers/<int:pk>/', ContainerDetail.as_view()),
     path('sizes/', get_sizes_by_shape, name='get_sizes_by_shape'),
+    path('materials/', get_material_choices),
 ]

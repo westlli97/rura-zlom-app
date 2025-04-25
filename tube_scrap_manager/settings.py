@@ -14,6 +14,7 @@ from pathlib import Path
 
 import os
 
+
 # Ścieżka bazowa projektu (najczęściej już zdefiniowana jako BASE_DIR)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -43,6 +44,7 @@ MIDDLEWARE = [
 ]
 
 ALLOWED_HOSTS = []
+
 
 
 # Application definition

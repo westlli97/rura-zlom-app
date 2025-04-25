@@ -2,7 +2,12 @@
 from django.db import models
 
 MATERIAL_CHOICES = [
-    ('AL', 'Aluminium'),
+    ('AL_SUR', 'Aluminium Surowe'),
+    ('AL_C35', 'Aluminium Anoda Czarna C35'),
+    ('AL_C31', 'Aluminium Anoda Srebrna C31'),
+    ('AL_SG', 'Aluminium Anoda Srebrna Gładka'),
+    ('AL_C30', 'Aluminium Anoda Inox C30'),
+    ('AL_LAK_CZ', 'Aluminium Lakier Czarny'),
     ('A304', 'AISI 304'),
     ('A304_Poler', 'AISI 304 Poler'),
     ('A316', 'AISI 316'),
@@ -57,6 +62,6 @@ class Container(models.Model):
 
 
     def __str__(self):
-        return f"{self.get_material_display()} - {self.get_shape_display()} - {self.weight} kg"
+        return f"{self.get_material_display()} - {self.get_shape_display()} - {self.weight_kg} kg"
 
 

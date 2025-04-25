@@ -31,7 +31,9 @@ const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit 
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit}
+      className="bg-white shadow-xl rounded-xl p-6 w-full max-w-md space-y-4">
+      
       <input
         type="number"
         step="0.1"
@@ -39,8 +41,14 @@ const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit 
         value={weight}
         onChange={(e) => setWeight(e.target.value)}
         required
+        className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
       />
-      <button type="submit" disabled={loading}>
+      <button 
+        type="submit" 
+        disabled={loading}
+        className={`w-full text-white font-semibold py-2 rounded-md transition duration-200 ${
+        loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+    }`}>
         {loading ? 'Dodawanie...' : 'Dodaj wagę'}
       </button>
       {loading && <p>⏳ Trwa dodawanie...</p>}

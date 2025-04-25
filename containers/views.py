@@ -3,7 +3,7 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Container
+from .models import Container, MATERIAL_CHOICES
 from rest_framework import status
 from .serializers import ContainerSerializer
 
@@ -22,6 +22,11 @@ def get_sizes_by_shape(request):
 
     sizes = ShapeSize.objects.filter(shape=shape).values('id', 'size_label')
     return JsonResponse(list(sizes), safe=False)
+
+@api_view(['GET'])
+def get_material_choices(request):
+    choices = [{"value": key, "label": label} for key, label in MATERIAL_CHOICES]
+    return Response(choices)
 
 
 def csrf_token_view(request):
