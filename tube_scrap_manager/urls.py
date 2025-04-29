@@ -15,10 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
 from containers.views import ContainerList
+
+from django.urls import path, include, re_path
+from containers import views as api_views  # Twoje API – zmień, jeśli masz oddzielny plik urls dla API
+from .frontend_views import FrontendAppView
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
+from containers.views import csrf_token_view
+
+@ensure_csrf_cookie
+def get_csrf(request):
+    return JsonResponse({'detail': 'CSRF cookie set'})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/containerlist/', ContainerList.as_view(), name='Container-list'),
+    path('api/csrf/', csrf_token_view),
+    path('csrf/', csrf_token_view),
+    path('api/', include('containers.urls')),  # ścieżki do API Django REST Framework
+    # Wszystkie pozostałe adresy przekierowujemy do frontendu React
+    #re_path(r'^.*$', FrontendAppView.as_view(), name='frontend'),
+    re_path(r'^(?!admin|api).*$', FrontendAppView.as_view(), name='frontend'),
 ]

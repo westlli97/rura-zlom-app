@@ -7,6 +7,30 @@ from .models import Container
 from rest_framework import status
 from .serializers import ContainerSerializer
 
+from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt
+
+from django.middleware.csrf import get_token
+from django.http import JsonResponse
+from django.views import View
+
+
+def csrf_token_view(request):
+    return JsonResponse({'csrfToken': get_token(request)})
+
+
+
+
+
+@csrf_exempt
+@api_view(['POST'])
+def add_container(request):
+    serializer = ContainerSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
 class ContainerList(APIView):
     # GET: Pobieranie dostępnych pojemników
     def get(self, request):
@@ -56,3 +80,7 @@ class ContainerDetail(APIView):
 
         container.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
