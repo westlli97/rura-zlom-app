@@ -1,51 +1,119 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import TileSelector from './TileSelector';
+import { fetchMaterials } from '../api/materialsApi';
 
 const RuraSelection = ({ 
   selectedType, 
   setSelectedType, 
   selectedMaterial, 
   setSelectedMaterial,
-  selectedSize,  // Nowe pole dla rozmiaru
-  setSelectedSize // Funkcja do ustawiania rozmiaru
-}) => (
-  <div>
-    <h2>Wybierz typ rury</h2>
-    <select value={selectedType} onChange={e => setSelectedType(e.target.value)}>
-      <option value="">-- Typ przekroju --</option>
-      <option value="ROUND">Okrągła</option>
-      <option value="SQUARE">Kwadratowa</option>
-      <option value="RECT">Prostokątny</option>
-      <option value="D_Shape">Marcepan</option>
-    </select>
+  selectedSize,  
+  setSelectedSize 
+}) => {
+  const [aluminiumSubtypes, setAluminiumSubtypes] = useState([]);
+  const [showAluminiumSubtypes, setShowAluminiumSubtypes] = useState(false);
+  const [selectedAluminiumSubtype, setSelectedAluminiumSubtype] = useState('');
 
-    <select value={selectedMaterial} onChange={e => setSelectedMaterial(e.target.value)}>
-      <option value="">-- Materiał --</option>
-      <option value="AL">Aluminium</option>
-      <option value="A304">AISI 304</option>
-      <option value="A316">AISI 316</option>
-      <option value="MS">Mosiądz</option>
-    </select>
+  useEffect(() => {
+    fetchMaterials().then(data => {
+      const aluminiumOptions = data.filter(material => material.value.startsWith('AL'));
+      console.log("Aluminium subtypes:", aluminiumOptions);
+      setAluminiumSubtypes(aluminiumOptions);
+    });
+  }, []);
 
-<h2>Wybierz rozmiar</h2>
-<select value={selectedSize} onChange={e => setSelectedSize(e.target.value)}>
-  <option value="">-- Wybierz rozmiar --</option>
-  <option value="1">Fi22</option>
-  <option value="2">Fi25</option>
-  <option value="3">Fi30</option>
-  <option value="4">Fi40</option>
-  <option value="5">Fi50</option>
-  <option value="6">40x40</option>
-  <option value="7">25x25</option>
-  <option value="8">30x30</option>
-  <option value="9">30x10</option>
-  <option value="10">40x10</option>
-  <option value="11">40x20</option>
-  <option value="12">50x25</option>
-  <option value="13">Marcepan</option>
-</select>
+  useEffect(() => {
+    setSelectedSize('');
+  }, [selectedType, setSelectedSize]);
 
-  </div>
-);
+  const getAvailableSizes = () => {
+    switch (selectedType) {
+      case 'ROUND':
+        return [
+          { value: '1', label: 'Fi22' },
+          { value: '2', label: 'Fi25' },
+          { value: '3', label: 'Fi30' },
+          { value: '4', label: 'Fi40' },
+          { value: '5', label: 'Fi50' },
+        ];
+      case 'SQUARE':
+        return [
+          { value: '6', label: '40x40' },
+          { value: '7', label: '25x25' },
+          { value: '8', label: '30x30' },
+        ];
+      case 'RECT':
+        return [
+          { value: '9', label: '30x10' },
+          { value: '10', label: '40x10' },
+          { value: '11', label: '40x20' },
+          { value: '12', label: '50x25' },
+        ];
+      case 'D_Shape':
+        return [
+          { value: '13', label: 'Marcepan' },
+        ];
+      default:
+        return [];
+    }
+  };
 
+  const availableSizes = getAvailableSizes();
+
+  return (
+    <div>
+      <TileSelector 
+        label="Wybierz typ rury" 
+        options={[
+          { value: 'ROUND', label: 'Okrągła' },
+          { value: 'SQUARE', label: 'Kwadratowa' },
+          { value: 'RECT', label: 'Prostokątny' },
+          { value: 'D_Shape', label: 'Marcepan' },
+        ]}
+        selectedValue={selectedType}
+        onSelect={setSelectedType}
+      />
+      
+      <TileSelector 
+        label="Wybierz materiał" 
+        options={[
+          { value: 'AL', label: 'Aluminium' },
+          { value: 'A304', label: 'AISI 304' },
+          { value: 'A316', label: 'AISI 316' },
+          { value: 'MS', label: 'Mosiądz' },
+        ]}
+        selectedValue={selectedMaterial}
+        onSelect={(value) => {
+          setSelectedMaterial(value);
+          setShowAluminiumSubtypes(value === 'AL');
+        }}
+      />
+
+      {showAluminiumSubtypes && (
+        <TileSelector
+          label="Wybierz typ aluminium"
+          options={aluminiumSubtypes}
+          selectedValue={selectedAluminiumSubtype}
+          onSelect={(value) => {
+      // Zaktualizowanie stanu selectedAluminiumSubtype, żeby podświetlić kafelek
+            setSelectedAluminiumSubtype(value);
+      
+      // Zaktualizowanie stanu selectedMaterial, aby przesłać ten wybrany materiał do backendu
+            setSelectedMaterial(value);
+    }}
+        />
+      )}
+      
+      {selectedType && (
+        <TileSelector 
+          label="Wybierz rozmiar" 
+          options={availableSizes}
+          selectedValue={selectedSize}
+          onSelect={setSelectedSize}
+        />
+      )}
+    </div>
+  );
+};
 
 export default RuraSelection;
