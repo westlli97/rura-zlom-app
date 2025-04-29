@@ -1,6 +1,8 @@
 
 from django.db import models
 
+
+
 MATERIAL_CHOICES = [
     ('AL_SUR', 'Aluminium Surowe'),
     ('AL_C35', 'Aluminium Anoda Czarna C35'),
@@ -36,7 +38,10 @@ SIZE_CHOICES = [
     ('100x20', '100x20'),
     ('Owal', 'Owal'),
     ('Marcepan', 'Marcepan'),
+
 ]
+
+
 
 class ShapeSize(models.Model):
     shape = models.CharField(max_length=10, choices=SHAPE_CHOICES)
@@ -49,10 +54,13 @@ class ShapeSize(models.Model):
         return f"{self.shape} - {self.size_label}"
 
 
+class ContainerEntry(models.Model):
+    material = models.CharField(max_length=100)  # albo ForeignKey
+    size = models.ForeignKey(ShapeSize, on_delete=models.CASCADE)
+    total_weight_kg = models.DecimalField(max_digits=10, decimal_places=2)
+
 
 class Container(models.Model):
-
-
     material = models.CharField(max_length=10, choices=MATERIAL_CHOICES)
     shape = models.CharField(max_length=10, choices=SHAPE_CHOICES)
     weight_kg = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

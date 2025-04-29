@@ -13,7 +13,19 @@ from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.views import View
-from .models import ShapeSize
+from .models import ShapeSize, ContainerEntry
+from django.db.models import Sum
+
+class WeightSummaryView(APIView):
+    def get(self, request):
+        summary = (
+            ContainerEntry.objects
+            .values('material', 'size_id')  # grupowanie po tych dwóch
+            .annotate(total_weight=Sum('weight_kg'))
+            .order_by('material', 'size_id')
+        )
+        return Response(summary)
+
 
 def get_sizes_by_shape(request):
     shape = request.GET.get('shape')
@@ -55,9 +67,33 @@ class ContainerList(APIView):
         serializer = ContainerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            update_container_entries()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+def update_container_entries():
+    # Grupujemy dane z containers_container po material i size_id
+    grouped_entries = (
+        Container.objects
+        .values('material', 'size_id')
+        .annotate(total_weight=Sum('weight_kg'))
+    )
+
+    for entry in grouped_entries:
+        material = entry['material']
+        size_id = entry['size_id']
+        total_weight = entry['total_weight']
+
+        # Sprawdzamy, czy rekord w ContainerEntry już istnieje, jeśli tak - aktualizujemy
+        container_entry, created = ContainerEntry.objects.get_or_create(
+            material=material,
+            size_id=size_id,
+            defaults={'total_weight_kg': total_weight}
+        )
+
+        if not created:
+            container_entry.total_weight_kg = total_weight
+            container_entry.save()
 
 class ContainerDetail(APIView):
     # GET: Pobieranie pojedynczego pojemnika
