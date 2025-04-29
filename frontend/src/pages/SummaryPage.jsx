@@ -2,26 +2,25 @@ import React, { useEffect, useState } from 'react';
 import ContainerTile from '../components/ContainerTile';
 
 const SummaryPage = () => {
-  const [containers, setContainers] = useState([]);
+  const [entries, setEntries] = useState([]);
 
-useEffect(() => {
-  fetch('http://localhost:8000/api/containers/')
-    .then(response => response.json())
-    .then(data => {
-      console.log('Dane z API:', data); // ?
-      setContainers(data);
-    });
-}, []);
+  useEffect(() => {
+    fetch('http://localhost:8000/api/container-entries/')
+      .then(response => response.json())
+      .then(data => {
+        console.log('Dane z nowego API:', data);
+        setEntries(data);
+      });
+  }, []);
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-      {containers.map((container, index) => (
+      {entries.map((entry, index) => (
         <ContainerTile
           key={index}
-          material={container.material}  // Zaktualizowany material
-          shape={container.shape}  // Zaktualizowany ksztalt
-          weight={container.weight_kg}  // Zaktualizowana waga
-          size={container.size}  // Zaktualizowany rozmiar
+          material={entry.material_name} // np. "Mosiądz"
+          shape={entry.size_label}       // np. "Marcepan"
+          weight={entry.total_weight_kg} // np. "112.00"
         />
       ))}
     </div>

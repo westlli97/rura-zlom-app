@@ -59,6 +59,9 @@ class ContainerEntry(models.Model):
     size = models.ForeignKey(ShapeSize, on_delete=models.CASCADE)
     total_weight_kg = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def __str__(self):
+        return f"{self.material} - {self.size.size_label} - {self.total_weight_kg}"
+
 
 class Container(models.Model):
     material = models.CharField(max_length=10, choices=MATERIAL_CHOICES)

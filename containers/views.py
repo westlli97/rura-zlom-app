@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Container, MATERIAL_CHOICES
 from rest_framework import status
-from .serializers import ContainerSerializer
+from .serializers import ContainerSerializer, ContainerEntrySerializer
 
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
@@ -16,15 +16,7 @@ from django.views import View
 from .models import ShapeSize, ContainerEntry
 from django.db.models import Sum
 
-class WeightSummaryView(APIView):
-    def get(self, request):
-        summary = (
-            ContainerEntry.objects
-            .values('material', 'size_id')  # grupowanie po tych dwóch
-            .annotate(total_weight=Sum('weight_kg'))
-            .order_by('material', 'size_id')
-        )
-        return Response(summary)
+
 
 
 def get_sizes_by_shape(request):
@@ -55,21 +47,7 @@ def add_container(request):
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
 
-class ContainerList(APIView):
-    # GET: Pobieranie dostępnych pojemników
-    def get(self, request):
-        items = Container.objects.all()
-        serializer = ContainerSerializer(items, many=True)
-        return Response(serializer.data)
 
-    # POST: Dodawanie nowych pojemników
-    def post(self, request):
-        serializer = ContainerSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            update_container_entries()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 def update_container_entries():
     # Grupujemy dane z containers_container po material i size_id
@@ -94,6 +72,36 @@ def update_container_entries():
         if not created:
             container_entry.total_weight_kg = total_weight
             container_entry.save()
+
+
+
+
+class WeightSummaryView(APIView):
+    def get(self, request):
+        summary = (
+            ContainerEntry.objects
+            .values('material', 'size_id')  # grupowanie po tych dwóch
+            .annotate(total_weight=Sum('weight_kg'))
+            .order_by('material', 'size_id')
+        )
+        return Response(summary)
+
+class ContainerList(APIView):
+    # GET: Pobieranie dostępnych pojemników
+    def get(self, request):
+        items = Container.objects.all()
+        serializer = ContainerSerializer(items, many=True)
+        return Response(serializer.data)
+
+    # POST: Dodawanie nowych pojemników
+    def post(self, request):
+        serializer = ContainerSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            update_container_entries()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ContainerDetail(APIView):
     # GET: Pobieranie pojedynczego pojemnika
@@ -129,6 +137,14 @@ class ContainerDetail(APIView):
         container.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class ContainerEntryListView(APIView):
+    def get(self, request):
+        # Pobranie wszystkich wpisów z tabeli ContainerEntry
+        entries = ContainerEntry.objects.all()
+        # Serializacja danych
+        serializer = ContainerEntrySerializer(entries, many=True)
+        return Response(serializer.data)
 
 
 
