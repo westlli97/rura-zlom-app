@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Container, ContainerEntry, MATERIAL_CHOICES
+from .models import Container, ContainerEntry, MATERIAL_CHOICES, TareBox
+
 
 MATERIAL_DICT = dict(MATERIAL_CHOICES)
 
@@ -19,3 +20,8 @@ class ContainerEntrySerializer(serializers.ModelSerializer):
 
     def get_material_name(self, obj):
         return MATERIAL_DICT.get(obj.material, obj.material)
+
+class TareBoxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TareBox
+        fields = '__all__'

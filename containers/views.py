@@ -3,9 +3,9 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Container, MATERIAL_CHOICES
+from .models import Container, MATERIAL_CHOICES, TareBox
 from rest_framework import status
-from .serializers import ContainerSerializer, ContainerEntrySerializer
+from .serializers import ContainerSerializer, ContainerEntrySerializer, TareBoxSerializer
 
 from rest_framework.decorators import api_view
 from django.views.decorators.csrf import csrf_exempt
@@ -15,7 +15,7 @@ from django.http import JsonResponse
 from django.views import View
 from .models import ShapeSize, ContainerEntry
 from django.db.models import Sum
-
+from rest_framework import viewsets
 
 
 
@@ -146,5 +146,7 @@ class ContainerEntryListView(APIView):
         serializer = ContainerEntrySerializer(entries, many=True)
         return Response(serializer.data)
 
-
+class TareBoxViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = TareBox.objects.all()
+    serializer_class = TareBoxSerializer
 

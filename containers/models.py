@@ -72,7 +72,12 @@ class Container(models.Model):
 
 
 
+
     def __str__(self):
         return f"{self.get_material_display()} - {self.get_shape_display()} - {self.weight_kg} kg"
 
 
+
+class TareBox(models.Model):
+    name = models.CharField(max_length=50)
+    weight_kg = models.DecimalField(max_digits=6, decimal_places=2)

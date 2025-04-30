@@ -23,6 +23,11 @@ from .frontend_views import FrontendAppView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 from containers.views import csrf_token_view
+from containers.views import TareBoxViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r'tares', TareBoxViewSet, basename='tares')
 
 @ensure_csrf_cookie
 def get_csrf(request):
@@ -30,6 +35,7 @@ def get_csrf(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
     path('api/csrf/', csrf_token_view),
     path('csrf/', csrf_token_view),
     path('api/', include('containers.urls')),  # ścieżki do API Django REST Framework
