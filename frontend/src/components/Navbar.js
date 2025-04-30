@@ -2,7 +2,7 @@ import React from 'react';
 
 const Navbar = () => (
   <nav className="navbar bg-dark text-white p-3">
-    <h1>Rura-Złom</h1>
+    <img src="/logobiale.png" alt="Logo" style={{ height: '100px' }} />  {/* Ścieżka do public */}
   </nav>
 );
 

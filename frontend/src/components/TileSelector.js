@@ -10,15 +10,14 @@ const TileSelector = ({ label, options, selectedValue, onSelect }) => {
             marginTop: '12px',
             }}>
       <h3>{label}</h3>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '22px', marginTop: '52px', }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '22px', marginTop: '22px', justifyContent: 'center',}}>
         {options.map(option => (
           <div
             key={option.value}
             onClick={() => onSelect(option.value)}
             style={{
-
-                padding: '12px 24px',
-                fontSize: '0.9rem',
+                padding: '32px 50px',
+                fontSize: '1.0rem',
                 backgroundColor: selectedValue === option.value ? '#0056b3' : '#007bff',
                 color: 'white',
                 border: 'none',
@@ -28,7 +27,7 @@ const TileSelector = ({ label, options, selectedValue, onSelect }) => {
                 transition: 'background-color 0.3s ease'
             }}
             onMouseOver={(e) => {
-                e.target.style.backgroundColor = '#0056b3';
+                e.target.style.backgroundColor = '#ff8400';
             }}
 
             onMouseOut={(e) => {

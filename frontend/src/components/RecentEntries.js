@@ -1,7 +1,13 @@
 import React from 'react';
 
 const RecentEntries = ({ entries }) => (
-  <div className="mt-6">
+  <div 
+    className="mt-6" 
+    style={{
+      gap: '22px', // Odstępy między kafelkami
+      marginTop: '12px',
+    }}
+  >
     <h3 className="text-lg font-semibold mb-2">Ostatnie wpisy</h3>
     <ul className="space-y-1">
       {entries.map((entry, index) => (

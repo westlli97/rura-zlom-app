@@ -59,17 +59,34 @@ const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit 
 
 return (
     <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Waga:
+      <form onSubmit={handleSubmit}
+        style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center', // Wyśrodkowanie w poziomie
+        justifyContent: 'center',// Wyśrodkowanie w pionie
+        marginTop: '30px',
+        }}
+        >
+
+          <p></p>
           <input
             type="number"
             value={weight}
             onChange={handleWeightChange}
             placeholder="Wpisz wagę"
             className="rounded-md border border-gray-300 px-4 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+            style={{
+                width: '300px',  // Szerokość inputa
+                height: '50px',  // Wysokość inputa
+                paddingLeft: '15px',  // Zwiększenie paddingu od lewej
+                paddingRight: '15px',  // Zwiększenie paddingu od prawej
+                paddingTop: '10px',   // Zwiększenie paddingu od góry
+                paddingBottom: '10px',
+                fontSize: '1.5rem',
+  }}
           />
-        </label>
+        
         
         <div style={{ 
             display: 'flex', 
@@ -102,7 +119,7 @@ return (
                 transition: 'background-color 0.3s ease'
             }}
             onMouseOver={(e) => {
-                e.target.style.backgroundColor = '#0056b3';
+                e.target.style.backgroundColor = '#ff8400';
             }}
 
             onMouseOut={(e) => {
@@ -124,10 +141,10 @@ return (
         <button
             type="submit"
             style={{
-                   
+                marginTop: '62px',  
                 padding: '12px 24px',
                 fontSize: '1.2rem',
-                backgroundColor: '#007bff',
+                backgroundColor: '#ff8400',
                 color: 'white',
                 border: 'none',
                 borderRadius: '8px',
@@ -136,7 +153,7 @@ return (
                 transition: 'background-color 0.3s ease'
             }}
             onMouseOver={(e) => (e.target.style.backgroundColor = '#0056b3')}
-            onMouseOut={(e) => (e.target.style.backgroundColor = '#007bff')}
+            onMouseOut={(e) => (e.target.style.backgroundColor = '#ff8400')}
             >
                          Dodaj wagę
                     </button>

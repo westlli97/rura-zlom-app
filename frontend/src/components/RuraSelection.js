@@ -99,8 +99,10 @@ const RuraSelection = ({
       />
 
       {showAluminiumSubtypes && (
+        <div style={{ textAlign: 'center', marginBottom: '5px' }}>
+            <h3>Wybierz typ aluminium</h3>
+        
         <TileSelector
-          label="Wybierz typ aluminium"
           options={aluminiumSubtypes}
           selectedValue={selectedAluminiumSubtype}
           onSelect={(value) => {
@@ -111,6 +113,7 @@ const RuraSelection = ({
             setSelectedMaterial(value);
     }}
         />
+    </div>        
       )}
       
       
