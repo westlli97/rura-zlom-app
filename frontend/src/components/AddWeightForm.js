@@ -36,10 +36,12 @@ const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit 
     e.preventDefault();
     setLoading(true);
     console.log('Kliknięto Dodaj wagę');
+    const weightNum = parseFloat(weight);
+    const weightToSend = selectedTare ? weight - selectedTare.weight_kg : weight;
 
     try {
       const containerData = {
-        weight_kg: parseFloat(finalWeight),
+        weight_kg: weightToSend,
         material: selectedMaterial,
         shape: selectedType,
         size: selectedSize,
