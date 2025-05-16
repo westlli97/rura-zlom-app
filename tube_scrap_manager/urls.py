@@ -26,6 +26,9 @@ from containers.views import csrf_token_view
 from containers.views import TareBoxViewSet
 from rest_framework.routers import DefaultRouter
 
+
+
+
 router = DefaultRouter()
 router.register(r'tares', TareBoxViewSet, basename='tares')
 
@@ -42,4 +45,5 @@ urlpatterns = [
     # Wszystkie pozostałe adresy przekierowujemy do frontendu React
     #re_path(r'^.*$', FrontendAppView.as_view(), name='frontend'),
     re_path(r'^(?!admin|api).*$', FrontendAppView.as_view(), name='frontend'),
+
 ]

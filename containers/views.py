@@ -50,19 +50,21 @@ def add_container(request):
 
 
 def update_container_entries():
-    # Grupujemy dane z containers_container po material i size_id
+    # Oblicz dane z Container
     grouped_entries = (
         Container.objects
         .values('material', 'size_id')
         .annotate(total_weight=Sum('weight_kg'))
     )
 
+    # Lista aktywnych kombinacji material + size_id
+    active_keys = set()
+
     for entry in grouped_entries:
         material = entry['material']
         size_id = entry['size_id']
         total_weight = entry['total_weight']
 
-        # Sprawdzamy, czy rekord w ContainerEntry już istnieje, jeśli tak - aktualizujemy
         container_entry, created = ContainerEntry.objects.get_or_create(
             material=material,
             size_id=size_id,
@@ -72,6 +74,19 @@ def update_container_entries():
         if not created:
             container_entry.total_weight_kg = total_weight
             container_entry.save()
+
+        active_keys.add((material, size_id))
+
+    # Usuń rekordy ContainerEntry, które nie istnieją już w grouped_entries
+    stale_entries = ContainerEntry.objects.exclude(
+        material__in=[key[0] for key in active_keys],
+        size_id__in=[key[1] for key in active_keys]
+    )
+
+    for entry in stale_entries:
+        # Usuwamy tylko te, które nie pasują do żadnej pary (material, size_id)
+        if (entry.material, entry.size_id) not in active_keys:
+            entry.delete()
 
 
 
@@ -104,37 +119,39 @@ class ContainerList(APIView):
 
 
 class ContainerDetail(APIView):
-    # GET: Pobieranie pojedynczego pojemnika
-    def get(self, request, pk):
+    def get_object(self, pk):
         try:
-            container = Container.objects.get(pk=pk)
+            return Container.objects.get(pk=pk)
         except Container.DoesNotExist:
+            return None
+
+    def get(self, request, pk):
+        container = self.get_object(pk)
+        if not container:
             return Response({"error": "Container not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ContainerSerializer(container)
         return Response(serializer.data)
 
-    # PUT/PATCH: Edytowanie danych o pojemniku
     def put(self, request, pk):
-        try:
-            container = Container.objects.get(pk=pk)
-        except Container.DoesNotExist:
+        container = self.get_object(pk)
+        if not container:
             return Response({"error": "Container not found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ContainerSerializer(container, data=request.data)
         if serializer.is_valid():
             serializer.save()
+            update_container_entries()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    # DELETE: Usuwanie pojemnika
     def delete(self, request, pk):
-        try:
-            container = Container.objects.get(pk=pk)
-        except Container.DoesNotExist:
+        container = self.get_object(pk)
+        if not container:
             return Response({"error": "Container not found"}, status=status.HTTP_404_NOT_FOUND)
 
         container.delete()
+        update_container_entries()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
