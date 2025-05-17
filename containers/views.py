@@ -8,13 +8,14 @@ from rest_framework import status
 from .serializers import ContainerSerializer, ContainerEntrySerializer, TareBoxSerializer
 
 from rest_framework.decorators import api_view
+from rest_framework.generics import DestroyAPIView
 from django.views.decorators.csrf import csrf_exempt
 
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.views import View
 from .models import ShapeSize, ContainerEntry
-from django.db.models import Sum
+from django.db.models import Sum, Max
 from rest_framework import viewsets
 
 
@@ -95,11 +96,25 @@ class WeightSummaryView(APIView):
     def get(self, request):
         summary = (
             ContainerEntry.objects
-            .values('material', 'size_id')  # grupowanie po tych dwóch
-            .annotate(total_weight=Sum('weight_kg'))
+            .values('material', 'size_id', 'size__shape', 'size__size_label')  # uwzględnij pola z powiązanego ShapeSize
+            .annotate(
+                total_weight=Sum('total_weight_kg'),
+                id=Max('id')  # id ostatniego elementu z grupy (do usuwania)
+            )
             .order_by('material', 'size_id')
         )
-        return Response(summary)
+        # Możesz ewentualnie zrobić formatowanie odpowiedzi na bardziej czytelne:
+        response_data = []
+        for item in summary:
+            response_data.append({
+                "material": item['material'],
+                "size_id": item['size_id'],
+                "shape": item['size__shape'],          # kształt z ShapeSize
+                "size_label": item['size__size_label'], # rozmiar z ShapeSize
+                "total_weight": float(item['total_weight']),
+                "id": item['id'],
+            })
+        return Response(response_data)
 
 class ContainerList(APIView):
     # GET: Pobieranie dostępnych pojemników
@@ -167,3 +182,6 @@ class TareBoxViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = TareBox.objects.all()
     serializer_class = TareBoxSerializer
 
+class ContainerEntryDeleteView(DestroyAPIView):
+    queryset = ContainerEntry.objects.all()
+    serializer_class = ContainerEntrySerializer
