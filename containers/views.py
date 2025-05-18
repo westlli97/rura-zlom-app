@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Container, MATERIAL_CHOICES, TareBox
 from rest_framework import status
-from .serializers import ContainerSerializer, ContainerEntrySerializer, TareBoxSerializer
+from .serializers import ContainerSerializer, ContainerEntrySerializer, TareBoxSerializer, MATERIAL_DICT
 
 from rest_framework.decorators import api_view
 from rest_framework.generics import DestroyAPIView
@@ -108,6 +108,7 @@ class WeightSummaryView(APIView):
         for item in summary:
             response_data.append({
                 "material": item['material'],
+                "material_name": MATERIAL_DICT.get(item['material'], item['material']),
                 "size_id": item['size_id'],
                 "shape": item['size__shape'],          # kształt z ShapeSize
                 "size_label": item['size__size_label'], # rozmiar z ShapeSize

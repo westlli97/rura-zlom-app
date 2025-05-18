@@ -37,7 +37,7 @@ const ContainerTile = ({ material, shape, weight, onDelete }) => {
 
   return (
     <div style={tileStyle}>
-      <button style={buttonStyle} onClick={onDelete}>Usuń</button>
+      <button style={buttonStyle} onClick={onDelete}>Złomuj</button>
       <h3>{material}</h3>
       <p>Przekrój: {shape}</p>
       <p>Waga: {weight} kg</p>
