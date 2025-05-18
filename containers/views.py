@@ -185,3 +185,18 @@ class TareBoxViewSet(viewsets.ReadOnlyModelViewSet):
 class ContainerEntryDeleteView(DestroyAPIView):
     queryset = ContainerEntry.objects.all()
     serializer_class = ContainerEntrySerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        # Zapamiętaj material i size_id zanim usuniesz entry
+        material = instance.material
+        size_id = instance.size_id
+
+        # Usuń entry (czyli sumę)
+        self.perform_destroy(instance)
+
+        # Usuń wszystkie rekordy źródłowe Container z takim samym material i size_id
+        Container.objects.filter(material=material, size_id=size_id).delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
