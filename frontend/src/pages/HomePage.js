@@ -21,6 +21,22 @@ const HomePage = () => {
   const [entries, setEntries] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
 
+  // Dodajemy fetchEntries do pobierania wpisów
+  const fetchEntries = async () => {
+    try {
+      const response = await axios.get('/containers/');
+      const recent = response.data.slice(-5).reverse();
+      setEntries(recent);
+    } catch (error) {
+      console.error('Błąd podczas pobierania wpisów:', error);
+    }
+  };
+
+  // Wczytaj wpisy przy starcie
+  useEffect(() => {
+    fetchEntries();
+  }, []);
+
   const handleAddWeight = async (containerData) => {
     console.log("Dodano wagę:", containerData);
     
@@ -29,7 +45,7 @@ const HomePage = () => {
       const savedEntry = await addWeightEntry(containerData);
       
       // Po udanej wysyłce, dodajemy nowy wpis do lokalnego stanu
-      setEntries([savedEntry, ...entries.slice(0, 4)]);  // Lokalnie dodajemy do stanu, ograniczając do 5 ostatnich
+      setEntries([savedEntry, ...entries.slice(0, 4)]);
     } catch (error) {
       console.error('Błąd przy dodawaniu wagi:', error);
       alert('Nie udało się zapisać danych. Sprawdź połączenie z backendem.');
@@ -50,9 +66,9 @@ const HomePage = () => {
         selectedType={selectedType}
         selectedMaterial={selectedMaterial}
         selectedSize={selectedSize}
-        onSubmit={handleAddWeight}  // Przekazujemy funkcję do obsługi wysyłki
+        onSubmit={handleAddWeight}
       />
-      <RecentEntries entries={entries} />
+      <RecentEntries entries={entries} refreshEntries={fetchEntries} />
     </div>
   );
 };

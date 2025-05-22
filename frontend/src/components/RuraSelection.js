@@ -63,7 +63,7 @@ const RuraSelection = ({
   return (
     <div>
       <TileSelector 
-        label="Wybierz typ rury" 
+        label="" 
         options={[
           { value: 'ROUND', label: 'Okrągła' },
           { value: 'SQUARE', label: 'Kwadratowa' },
@@ -74,12 +74,21 @@ const RuraSelection = ({
         onSelect={setSelectedType}
       />
       
+      {selectedType && (
+        <TileSelector 
+          label="" 
+          options={availableSizes}
+          selectedValue={selectedSize}
+          onSelect={setSelectedSize}
+        />
+      )}
+      
       <TileSelector 
-        label="Wybierz materiał" 
+        label="" 
         options={[
           { value: 'AL', label: 'Aluminium' },
-          { value: 'A304', label: 'AISI 304' },
-          { value: 'A316', label: 'AISI 316' },
+          { value: 'A304', label: '304' },
+          { value: 'A316', label: '316' },
           { value: 'MS', label: 'Mosiądz' },
         ]}
         selectedValue={selectedMaterial}
@@ -90,8 +99,10 @@ const RuraSelection = ({
       />
 
       {showAluminiumSubtypes && (
+        <div style={{ textAlign: 'center', marginBottom: '5px' }}>
+            <h3>Wybierz typ aluminium</h3>
+        
         <TileSelector
-          label="Wybierz typ aluminium"
           options={aluminiumSubtypes}
           selectedValue={selectedAluminiumSubtype}
           onSelect={(value) => {
@@ -102,16 +113,10 @@ const RuraSelection = ({
             setSelectedMaterial(value);
     }}
         />
+    </div>        
       )}
       
-      {selectedType && (
-        <TileSelector 
-          label="Wybierz rozmiar" 
-          options={availableSizes}
-          selectedValue={selectedSize}
-          onSelect={setSelectedSize}
-        />
-      )}
+      
     </div>
   );
 };

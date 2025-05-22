@@ -1,6 +1,8 @@
 
 from django.db import models
 
+
+
 MATERIAL_CHOICES = [
     ('AL_SUR', 'Aluminium Surowe'),
     ('AL_C35', 'Aluminium Anoda Czarna C35'),
@@ -36,7 +38,10 @@ SIZE_CHOICES = [
     ('100x20', '100x20'),
     ('Owal', 'Owal'),
     ('Marcepan', 'Marcepan'),
+
 ]
+
+
 
 class ShapeSize(models.Model):
     shape = models.CharField(max_length=10, choices=SHAPE_CHOICES)
@@ -49,10 +54,16 @@ class ShapeSize(models.Model):
         return f"{self.shape} - {self.size_label}"
 
 
+class ContainerEntry(models.Model):
+    material = models.CharField(max_length=100)  # albo ForeignKey
+    size = models.ForeignKey(ShapeSize, on_delete=models.CASCADE)
+    total_weight_kg = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.material} - {self.size.size_label} - {self.total_weight_kg}"
+
 
 class Container(models.Model):
-
-
     material = models.CharField(max_length=10, choices=MATERIAL_CHOICES)
     shape = models.CharField(max_length=10, choices=SHAPE_CHOICES)
     weight_kg = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -61,7 +72,12 @@ class Container(models.Model):
 
 
 
+
     def __str__(self):
         return f"{self.get_material_display()} - {self.get_shape_display()} - {self.weight_kg} kg"
 
 
+
+class TareBox(models.Model):
+    name = models.CharField(max_length=50)
+    weight_kg = models.DecimalField(max_digits=6, decimal_places=2)
