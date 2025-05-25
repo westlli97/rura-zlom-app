@@ -20,7 +20,7 @@ SHAPE_CHOICES = [
     ('ROUND', 'Okrągły'),
     ('SQUARE', 'Kwadratowy'),
     ('RECT', 'Prostokątny'),
-    ('D_Shape', 'Marcepan')
+    ('Other', 'Inny')
 ]
 SIZE_CHOICES = [
     ('Fi22', 'Fi22'),
@@ -38,6 +38,10 @@ SIZE_CHOICES = [
     ('100x20', '100x20'),
     ('Owal', 'Owal'),
     ('Marcepan', 'Marcepan'),
+    ('Kieszen', 'Kieszeniówka'),
+    ('45x45', '45x45'),
+    ('Fi30x1.0', 'Fi30x1.0'),
+    ('60x60', '60x60'),
 
 ]
 
