@@ -6,22 +6,24 @@ import { addWeightEntry } from '../api/containersApi';
 import axios from '../api/axiosInstance';
 
 const HomePage = () => {
-  console.log('✅ Komponent HomePage został załadowany');
-
-  useEffect(() => {
-    axios.get('csrf/').then(() => {
-      console.log('✅ CSRF token pobrany i ustawiony w ciasteczkach');
-    }).catch((err) => {
-      console.error('❌ Błąd podczas pobierania CSRF tokena:', err);
-    });
-  }, []);
-
+  const [materials, setMaterials] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [selectedMaterial, setSelectedMaterial] = useState('');
   const [entries, setEntries] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
 
-  // Dodajemy fetchEntries do pobierania wpisów
+  useEffect(() => {
+    // Wykonaj GET na działający endpoint, żeby backend ustawił cookie csrftoken
+    axios.get('/materials/')
+      .then(response => {
+        setMaterials(response.data);
+      })
+      .catch(error => {
+        console.error('Błąd pobierania materiałów:', error);
+      });
+  }, []);
+
+  // Pobierz ostatnie wpisy
   const fetchEntries = async () => {
     try {
       const response = await axios.get('/containers/');
@@ -32,19 +34,13 @@ const HomePage = () => {
     }
   };
 
-  // Wczytaj wpisy przy starcie
   useEffect(() => {
     fetchEntries();
   }, []);
 
   const handleAddWeight = async (containerData) => {
-    console.log("Dodano wagę:", containerData);
-    
     try {
-      // Wysłanie danych do API
       const savedEntry = await addWeightEntry(containerData);
-      
-      // Po udanej wysyłce, dodajemy nowy wpis do lokalnego stanu
       setEntries([savedEntry, ...entries.slice(0, 4)]);
     } catch (error) {
       console.error('Błąd przy dodawaniu wagi:', error);
