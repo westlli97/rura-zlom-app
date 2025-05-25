@@ -5,7 +5,7 @@ const SummaryPage = () => {
   const [entries, setEntries] = useState([]);
 
   const fetchData = () => {
-    fetch('http://localhost:8000/api/containers/summary/')
+    fetch('https://zlom-app.onrender.com/api/containers/summary/')
       .then(response => response.json())
       .then(data => {
         console.log('Dane z nowego API:', data);
@@ -18,7 +18,7 @@ const SummaryPage = () => {
   }, []);
 
   const handleDelete = (id) => {
-    fetch(`http://localhost:8000/api/entries/${id}/delete/`, {
+    fetch(`https://zlom-app.onrender.com/api/entries/${id}/delete/`, {
       method: 'DELETE',
     })
       .then(response => {
