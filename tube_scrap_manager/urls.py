@@ -25,7 +25,7 @@ from django.http import JsonResponse
 from containers.views import csrf_token_view
 from containers.views import TareBoxViewSet
 from rest_framework.routers import DefaultRouter
-
+from django.views.generic import TemplateView
 
 
 
@@ -37,6 +37,7 @@ def get_csrf(request):
     return JsonResponse({'detail': 'CSRF cookie set'})
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/csrf/', csrf_token_view),
