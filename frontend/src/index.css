@@ -3,9 +3,6 @@ body {
   min-height: 100vh;
   height: auto;
   overflow-y: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   color: white;
   font-family: Arial, sans-serif;
   text-align: center;
