@@ -73,7 +73,7 @@ const RuraSelection = ({
           { value: 'ROUND', label: 'Okrągła' },
           { value: 'SQUARE', label: 'Kwadratowa' },
           { value: 'RECT', label: 'Prostokątny' },
-          { value: 'D_Shape', label: 'Marcepan' },
+          { value: 'Other', label: 'Inne' },
         ]}
         selectedValue={selectedType}
         onSelect={setSelectedType}
