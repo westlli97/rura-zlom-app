@@ -35,12 +35,15 @@ const RuraSelection = ({
           { value: '3', label: 'Fi30' },
           { value: '4', label: 'Fi40' },
           { value: '5', label: 'Fi50' },
+          { value: '16', label: 'Fi30x1.0' },
         ];
       case 'SQUARE':
         return [
           { value: '6', label: '40x40' },
           { value: '7', label: '25x25' },
           { value: '8', label: '30x30' },
+          { value: '15', label: '45x45' },
+          { value: '17', label: '60x60' },
         ];
       case 'RECT':
         return [
@@ -49,9 +52,11 @@ const RuraSelection = ({
           { value: '11', label: '40x20' },
           { value: '12', label: '50x25' },
         ];
-      case 'D_Shape':
+      case 'Other':
         return [
           { value: '13', label: 'Marcepan' },
+          { value: '14', label: 'Kieszen' },
+          { value: '18', label: 'Owal' },
         ];
       default:
         return [];
