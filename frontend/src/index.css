@@ -1,6 +1,8 @@
 body {
   background: linear-gradient(to bottom, #87CEFA, #00BFFF, #1E90FF, #4682B4);
-  height: 100vh;  /* Wysokość całej strony */
+  min-height: 100vh;
+  height: auto;
+  overflow-y: auto;
   display: flex;
   justify-content: center;
   align-items: center;
