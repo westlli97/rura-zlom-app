@@ -163,6 +163,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://zlom-app.onrender.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
 
@@ -171,6 +172,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    "https://zlom-app.onrender.com",
 ]
 LOGGING = {
     'version': 1,
