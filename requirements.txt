@@ -7,4 +7,3 @@ dj-database-url
 python-dotenv
 psycopg2
 whitenoise
-js-cookie

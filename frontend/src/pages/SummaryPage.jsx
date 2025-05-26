@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import ContainerTile from '../components/ContainerTile';
-import Cookies from 'js-cookie'; // 🆕 import js-cookie
 
 const SummaryPage = () => {
   const [entries, setEntries] = useState([]);
 
+  // 🆕 funkcja do pobierania wartości cookie po nazwie
+  function getCookie(name) {
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith(name + '='));
+    return cookieValue ? decodeURIComponent(cookieValue.split('=')[1]) : null;
+  }
+
   const fetchData = () => {
     fetch('https://zlom-app.onrender.com/api/containers/summary/', {
-      credentials: 'include', // 🆕 ważne, żeby przeglądarka przesłała ciasteczka (csrftoken)
+      credentials: 'include', // 🆕 przesyłanie ciasteczek (np. sesji, csrftoken)
     })
       .then(response => response.json())
       .then(data => {
@@ -21,13 +28,13 @@ const SummaryPage = () => {
   }, []);
 
   const handleDelete = (id) => {
-    const csrfToken = Cookies.get('csrftoken'); // 🆕 pobranie tokena przez js-cookie
+    const csrfToken = getCookie('csrftoken'); // 🆕 pobranie tokena z cookie
 
     fetch(`https://zlom-app.onrender.com/api/entries/${id}/delete/`, {
       method: 'DELETE',
-      credentials: 'include', // 🆕 przesyłanie ciastek z sesją
+      credentials: 'include', // 🆕 przesyłanie ciastek
       headers: {
-        'X-CSRFToken': csrfToken, // 🆕 dodanie tokena do nagłówka
+        'X-CSRFToken': csrfToken, // 🆕 dołączenie CSRF tokena do nagłówka
       },
     })
       .then(response => {
