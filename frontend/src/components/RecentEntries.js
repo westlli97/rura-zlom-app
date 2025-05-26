@@ -80,7 +80,7 @@ const RecentEntries = ({ entries, refreshEntries }) => {
             {entry.weight_kg} kg –  {" "}
             {formatDate(entry.created_at)} {"   "}
             <button 
-            style={{
+              style={{
                 marginTop: '10px',  
                 padding: '7px 10px',
                 fontSize: '0.8rem',
@@ -91,8 +91,15 @@ const RecentEntries = ({ entries, refreshEntries }) => {
                 cursor: 'pointer',
                 boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                 transition: 'background-color 0.3s ease'
-            }}
-            onClick={() => deleteEntry(entry.id)}>Usuń</button>
+              }}
+              onClick={() => {
+                if (window.confirm("Czy na pewno chcesz usunąć ten wpis?")) {
+                  deleteEntry(entry.id);
+                }
+              }}
+            >
+              Usuń
+            </button>
           </li>
         ))}
       </ul>

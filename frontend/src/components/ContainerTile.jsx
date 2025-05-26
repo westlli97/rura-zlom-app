@@ -37,7 +37,17 @@ const ContainerTile = ({ material, shape, weight, totalLength, onDelete }) => {
 
   return (
     <div style={tileStyle}>
-      <button style={buttonStyle} onClick={onDelete}>Złomuj</button>
+      <button
+        style={buttonStyle}
+        onClick={() => {
+          const confirmed = window.confirm('Czy na pewno chcesz usunąć ten wpis?');
+          if (confirmed) {
+            onDelete();
+          }
+        }}
+      >
+        Złomuj
+      </button>
       <h3>{material}</h3>
       <p>Przekrój: {shape}</p>
       <p>Waga: {weight} kg</p>
