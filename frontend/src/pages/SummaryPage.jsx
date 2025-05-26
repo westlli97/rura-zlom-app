@@ -39,7 +39,7 @@ const SummaryPage = () => {
           material={entry.material_name || entry.material}
           shape={entry.size_label || entry.size_id}
           weight={entry.total_weight_kg || entry.total_weight}
-          totalLength={entry.total_length}
+          totalLength={entry.total_length_m}
           onDelete={() => handleDelete(entry.id)}
         />
       ))}
