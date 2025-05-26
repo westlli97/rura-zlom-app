@@ -42,6 +42,7 @@ SIZE_CHOICES = [
     ('45x45', '45x45'),
     ('Fi30x1.0', 'Fi30x1.0'),
     ('60x60', '60x60'),
+    ('Fi25x1.0', 'Fi25x1.0'),
 
 ]
 
@@ -85,3 +86,15 @@ class Container(models.Model):
 class TareBox(models.Model):
     name = models.CharField(max_length=50)
     weight_kg = models.DecimalField(max_digits=6, decimal_places=2)
+
+
+class MaterialSizeDensity(models.Model):
+    material = models.CharField(max_length=100)
+    size = models.ForeignKey(ShapeSize, on_delete=models.CASCADE)
+    weight_per_meter = models.DecimalField(max_digits=10, decimal_places=4)
+
+    class Meta:
+        unique_together = ('material', 'size')
+
+    def __str__(self):
+        return f"{self.material} | {self.size} → {self.weight_per_meter} kg/m"

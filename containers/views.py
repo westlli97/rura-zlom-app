@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from django.views import View
-from .models import ShapeSize, ContainerEntry
+from .models import ShapeSize, ContainerEntry, MaterialSizeDensity
 from django.db.models import Sum, Max
 from rest_framework import viewsets
 
@@ -96,25 +96,44 @@ class WeightSummaryView(APIView):
     def get(self, request):
         summary = (
             ContainerEntry.objects
-            .values('material', 'size_id', 'size__shape', 'size__size_label')  # uwzględnij pola z powiązanego ShapeSize
+            .values('material', 'size_id', 'size__shape', 'size__size_label')
             .annotate(
                 total_weight=Sum('total_weight_kg'),
-                id=Max('id')  # id ostatniego elementu z grupy (do usuwania)
+                id=Max('id')
             )
             .order_by('material', 'size_id')
         )
-        # Możesz ewentualnie zrobić formatowanie odpowiedzi na bardziej czytelne:
+
         response_data = []
         for item in summary:
+            material = item['material']
+            size_id = item['size_id']
+            weight = float(item['total_weight'])
+
+            # Pobierz gęstość liniową z tabeli MaterialSizeDensity
+            try:
+                density_entry = MaterialSizeDensity.objects.get(material=material, size_id=size_id)
+                weight_per_meter = float(density_entry.weight_per_meter)
+                total_length = round(weight / weight_per_meter, 2)
+                linear_density = round(weight / total_length, 2)
+            except MaterialSizeDensity.DoesNotExist:
+                weight_per_meter = None
+                total_length = None
+                linear_density = None
+
             response_data.append({
-                "material": item['material'],
-                "material_name": MATERIAL_DICT.get(item['material'], item['material']),
-                "size_id": item['size_id'],
-                "shape": item['size__shape'],          # kształt z ShapeSize
-                "size_label": item['size__size_label'], # rozmiar z ShapeSize
-                "total_weight": float(item['total_weight']),
+                "material": material,
+                "material_name": MATERIAL_DICT.get(material, material),
+                "size_id": size_id,
+                "shape": item['size__shape'],
+                "size_label": item['size__size_label'],
+                "total_weight": weight,
+                "weight_per_meter": weight_per_meter,
+                "total_length_m": total_length,
+                "linear_density_kg_per_m": linear_density,
                 "id": item['id'],
             })
+
         return Response(response_data)
 
 class ContainerList(APIView):

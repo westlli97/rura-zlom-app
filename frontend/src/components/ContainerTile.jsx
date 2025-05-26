@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ContainerTile = ({ material, shape, weight, onDelete }) => {
+const ContainerTile = ({ material, shape, weight, totalLength, onDelete }) => {
   const numericWeight = parseFloat(weight);
 
   let backgroundColor;
@@ -41,6 +41,11 @@ const ContainerTile = ({ material, shape, weight, onDelete }) => {
       <h3>{material}</h3>
       <p>Przekrój: {shape}</p>
       <p>Waga: {weight} kg</p>
+      {totalLength !== null && totalLength !== undefined ? (
+        <p>Długość: {totalLength} m</p>
+      ) : (
+        <p style={{ color: 'gray' }}>(Brak danych o długości)</p>
+      )}
     </div>
   );
 };

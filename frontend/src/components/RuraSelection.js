@@ -36,6 +36,7 @@ const RuraSelection = ({
           { value: '4', label: 'Fi40' },
           { value: '5', label: 'Fi50' },
           { value: '16', label: 'Fi30x1.0' },
+          { value: '19', label: 'Fi25x1.0' },
         ];
       case 'SQUARE':
         return [
@@ -95,6 +96,8 @@ const RuraSelection = ({
           { value: 'A304', label: '304' },
           { value: 'A316', label: '316' },
           { value: 'MS', label: 'Mosiądz' },
+          { value: 'A304_Poler', label: 'Poler 304' },
+          { value: 'A316_Poler', label: 'Poler 316' },
         ]}
         selectedValue={selectedMaterial}
         onSelect={(value) => {
