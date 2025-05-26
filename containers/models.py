@@ -6,9 +6,9 @@ from django.db import models
 MATERIAL_CHOICES = [
     ('AL_SUR', 'Aluminium Surowe'),
     ('AL_C35', 'Aluminium Anoda Czarna C35'),
-    ('AL_C31', 'Aluminium Anoda Srebrna C31'),
+    ('AL_C30', 'Aluminium Anoda Srebrna C30'),
     ('AL_SG', 'Aluminium Anoda Srebrna Gładka'),
-    ('AL_C30', 'Aluminium Anoda Inox C30'),
+    ('AL_C31', 'Aluminium Anoda Inox C31'),
     ('AL_LAK_CZ', 'Aluminium Lakier Czarny'),
     ('A304', 'AISI 304'),
     ('A304_Poler', 'AISI 304 Poler'),
