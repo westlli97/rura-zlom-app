@@ -69,7 +69,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     #myapps
-    'containers',
+    'containers.apps.ContainersConfig',
 ]
 
 
@@ -175,19 +175,22 @@ CSRF_TRUSTED_ORIGINS = [
     "https://zlom-app.onrender.com",
 ]
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
         },
     },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "DEBUG",
+            "propagate": False,
         },
     },
 }
