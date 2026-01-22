@@ -20,7 +20,10 @@ const ContainerTile = ({ material, shape, weight, totalLength, onDelete }) => {
     borderRadius: '8px',
     textAlign: 'center',
     width: '200px',
+    flex: '1 1 200px',
+    maxWidth: '300px',
     position: 'relative',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
   };
 
   const buttonStyle = {

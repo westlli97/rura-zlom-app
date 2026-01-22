@@ -11,7 +11,7 @@ const AddWeightForm = ({ selectedType, selectedMaterial, selectedSize, onSubmit 
     
   useEffect(() => {
     // Pobierz dostępne tary z API
-    axios.get('https://zlom-app.onrender.com/api/tares/')
+    axios.get('/api/tares/')
       .then(response => {
         setTares(response.data);
       })

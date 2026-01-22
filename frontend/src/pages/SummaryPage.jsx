@@ -13,7 +13,7 @@ const SummaryPage = () => {
   }
 
   const fetchData = () => {
-    fetch('https://zlom-app.onrender.com/api/containers/summary/', {
+    fetch('/api/containers/summary/', {
       credentials: 'include', // 🆕 przesyłanie ciasteczek (np. sesji, csrftoken)
     })
       .then(response => response.json())
@@ -30,7 +30,7 @@ const SummaryPage = () => {
   const handleDelete = (id) => {
     const csrfToken = getCookie('csrftoken'); // 🆕 pobranie tokena z cookie
 
-    fetch(`https://zlom-app.onrender.com/api/entries/${id}/delete/`, {
+    fetch(`/api/entries/${id}/delete/`, {
       method: 'DELETE',
       credentials: 'include', // 🆕 przesyłanie ciastek
       headers: {
@@ -47,7 +47,13 @@ const SummaryPage = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+    <div style={{ 
+        display: 'flex', 
+        flexWrap: 'wrap', 
+        justifyContent: 'center',
+        padding: '20px',
+        gap: '10px'
+    }}>
       {entries.map((entry, index) => (
         <ContainerTile
           key={index}

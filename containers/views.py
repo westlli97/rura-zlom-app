@@ -1,36 +1,48 @@
 from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Container, MATERIAL_CHOICES, TareBox
+from .models import Container, TareBox, Material, Shape, ShapeSize, ContainerEntry, MaterialSizeDensity
 from rest_framework import status
-from .serializers import ContainerSerializer, ContainerEntrySerializer, TareBoxSerializer, MATERIAL_DICT
-
+from .serializers import (
+    ContainerSerializer, ContainerEntrySerializer, TareBoxSerializer,
+    MaterialSerializer, ShapeSerializer, ShapeSizeSerializer
+)
 from rest_framework.decorators import api_view
 from rest_framework.generics import DestroyAPIView
 from django.views.decorators.csrf import csrf_exempt
-
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from django.views import View
-from .models import ShapeSize, ContainerEntry, MaterialSizeDensity
 from django.db.models import Sum, Max
 from rest_framework import viewsets
 
 
+@api_view(['GET'])
+def get_shapes(request):
+    shapes = Shape.objects.all()
+    serializer = ShapeSerializer(shapes, many=True)
+    return Response(serializer.data)
+
 
 def get_sizes_by_shape(request):
-    shape = request.GET.get('shape')
-    if not shape:
-        return JsonResponse({'error': 'No shape provided'}, status=400)
+    shape_id = request.GET.get('shape_id')
+    shape_code = request.GET.get('shape')
+    
+    if shape_id:
+        sizes = ShapeSize.objects.filter(shape_id=shape_id).values('id', 'size_label')
+    elif shape_code:
+        sizes = ShapeSize.objects.filter(shape__code=shape_code).values('id', 'size_label')
+    else:
+        return JsonResponse({'error': 'No shape identifier provided'}, status=400)
 
-    sizes = ShapeSize.objects.filter(shape=shape).values('id', 'size_label')
     return JsonResponse(list(sizes), safe=False)
+
 
 @api_view(['GET'])
 def get_material_choices(request):
-    choices = [{"value": key, "label": label} for key, label in MATERIAL_CHOICES]
+    materials = Material.objects.filter(is_active=True)
+    serializer = MaterialSerializer(materials, many=True)
+    # Map to expected frontend format if needed, but better to update frontend
+    choices = [{"value": m.code, "label": m.name, "id": m.id} for m in materials]
     return Response(choices)
 
 
@@ -96,7 +108,7 @@ class WeightSummaryView(APIView):
     def get(self, request):
         summary = (
             ContainerEntry.objects
-            .values('material', 'size_id', 'size__shape', 'size__size_label')
+            .values('material', 'size_id', 'size__shape__name', 'size__size_label')
             .annotate(
                 total_weight=Sum('total_weight_kg'),
                 id=Max('id')
@@ -112,20 +124,31 @@ class WeightSummaryView(APIView):
 
             # Pobierz gęstość liniową z tabeli MaterialSizeDensity
             try:
-                density_entry = MaterialSizeDensity.objects.get(material=material, size_id=size_id)
+                # material can be code or id depending on how it's stored. 
+                # After refactor, material in ContainerEntry is a ForeignKey.
+                density_entry = MaterialSizeDensity.objects.get(material_id=material, size_id=size_id)
                 weight_per_meter = float(density_entry.weight_per_meter)
                 total_length = round(weight / weight_per_meter, 2)
                 linear_density = round(weight / total_length, 2)
-            except MaterialSizeDensity.DoesNotExist:
+            except (MaterialSizeDensity.DoesNotExist, ZeroDivisionError):
                 weight_per_meter = None
                 total_length = None
                 linear_density = None
 
+            # Get material object for the name
+            try:
+                mat_obj = Material.objects.get(id=material)
+                material_name = mat_obj.name
+                material_code = mat_obj.code
+            except Material.DoesNotExist:
+                material_name = str(material)
+                material_code = str(material)
+
             response_data.append({
-                "material": material,
-                "material_name": MATERIAL_DICT.get(material, material),
+                "material": material_code,
+                "material_name": material_name,
                 "size_id": size_id,
-                "shape": item['size__shape'],
+                "shape": item['size__shape__name'],
                 "size_label": item['size__size_label'],
                 "total_weight": weight,
                 "weight_per_meter": weight_per_meter,

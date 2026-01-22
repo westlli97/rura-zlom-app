@@ -1,9 +1,22 @@
 from rest_framework import serializers
-from .models import Container, ContainerEntry, MATERIAL_CHOICES, TareBox
+from .models import Container, ContainerEntry, TareBox, Material, Shape, ShapeSize
 
 
-MATERIAL_DICT = dict(MATERIAL_CHOICES)
+class MaterialSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Material
+        fields = ['id', 'code', 'name', 'is_active']
 
+class ShapeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shape
+        fields = ['id', 'code', 'name']
+
+class ShapeSizeSerializer(serializers.ModelSerializer):
+    shape_name = serializers.CharField(source='shape.name', read_only=True)
+    class Meta:
+        model = ShapeSize
+        fields = ['id', 'shape', 'shape_name', 'size_label']
 
 class ContainerSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,14 +25,11 @@ class ContainerSerializer(serializers.ModelSerializer):
 
 class ContainerEntrySerializer(serializers.ModelSerializer):
     size_label = serializers.CharField(source='size.size_label', read_only=True)
-    material_name = serializers.SerializerMethodField()
+    material_name = serializers.CharField(source='material.name', read_only=True)
 
     class Meta:
         model = ContainerEntry
-        fields = ['material', 'material_name', 'total_weight_kg', 'size_label']
-
-    def get_material_name(self, obj):
-        return MATERIAL_DICT.get(obj.material, obj.material)
+        fields = ['id', 'material', 'material_name', 'total_weight_kg', 'size_label']
 
 class TareBoxSerializer(serializers.ModelSerializer):
     class Meta:

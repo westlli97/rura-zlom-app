@@ -1,5 +1,9 @@
 from django.urls import path
-from .views import ContainerList, ContainerDetail, get_material_choices, get_sizes_by_shape, add_container, WeightSummaryView, ContainerEntryListView,ContainerEntryDeleteView
+from .views import (
+    ContainerList, ContainerDetail, get_material_choices, get_sizes_by_shape,
+    add_container, WeightSummaryView, ContainerEntryListView, ContainerEntryDeleteView,
+    get_shapes
+)
 from django.urls import get_resolver, path
 from django.http import JsonResponse
 
@@ -18,6 +22,7 @@ urlpatterns = [
     path('container-entries/', ContainerEntryListView.as_view(), name='container-entry-list'),
     path('containers/<int:pk>/', ContainerDetail.as_view(), name='container-detail'),
     path('materials/', get_material_choices, name='get-material-choices'),
+    path('shapes/', get_shapes, name='get-shapes'),
     path('get-sizes/', get_sizes_by_shape, name='get-sizes-by-shape'),
     #path('add-container/', add_container, name='add-container'),
     path('debug/routes/', debug_routes_view),

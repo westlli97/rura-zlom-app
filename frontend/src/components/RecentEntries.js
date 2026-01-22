@@ -18,46 +18,34 @@ const RecentEntries = ({ entries, refreshEntries }) => {
   const [sizeMap, setSizeMap] = useState({});
 
   useEffect(() => {
-    fetchMaterials().then(materials => {
-      const map = {};
-      materials.forEach(m => {
-        map[m.value] = m.label;
-      });
-      setMaterialMap(map);
-    });
-  }, []);
+    // Pobieramy kształty i materiały raz
+    const fetchData = async () => {
+      const [materials, shapes] = await Promise.all([fetchMaterials(), axios.get('/shapes/')]);
+      
+      const matMap = {};
+      materials.forEach(m => { matMap[m.value] = m.label; });
+      setMaterialMap(matMap);
 
-  useEffect(() => {
-    // Dla każdego unikalnego shape w entries robimy fetch do backendu
-    const shapes = [...new Set(entries.map(e => e.shape))];
+      const shapeMap = {};
+      shapes.data.forEach(s => { shapeMap[s.code] = s.name; });
 
-    const fetchSizesForShape = async (shape) => {
-      try {
-        const response = await axios.get(`/get-sizes/?shape=${shape}`);
-        // response.data to lista obiektów: { id, size_label }
-        return { shape, sizes: response.data };
-      } catch (error) {
-        console.error(`Błąd pobierania rozmiarów dla shape=${shape}:`, error);
-        return { shape, sizes: [] };
-      }
-    };
-
-    const fetchAllSizes = async () => {
-      const allSizes = await Promise.all(shapes.map(s => fetchSizesForShape(s)));
+      // Teraz rozmiary dla kształtów obecnych w entries
+      const uniqueShapes = [...new Set(entries.map(e => e.shape))];
+      const sizePromises = uniqueShapes.map(s => axios.get(`/get-sizes/?shape=${s}`));
+      const sizesResults = await Promise.all(sizePromises);
+      
       const newSizeMap = {};
-
       entries.forEach(entry => {
-        const shapeSizes = allSizes.find(s => s.shape === entry.shape)?.sizes || [];
-        // Szukamy rozmiaru po id (w entry.size mamy id)
+        const shapeIdx = uniqueShapes.indexOf(entry.shape);
+        const shapeSizes = sizesResults[shapeIdx]?.data || [];
         const sizeLabel = shapeSizes.find(sz => sz.id === entry.size)?.size_label || entry.size;
         newSizeMap[`${entry.shape}_${entry.size}`] = sizeLabel;
       });
-
       setSizeMap(newSizeMap);
     };
 
-    if (shapes.length > 0) {
-      fetchAllSizes();
+    if (entries.length > 0) {
+      fetchData();
     }
   }, [entries]);
 
